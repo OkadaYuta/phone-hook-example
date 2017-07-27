@@ -6,7 +6,7 @@ android {
     defaultConfig {
         applicationId "jp.co.mmi.example"
         minSdkVersion 16
-        targetSdkVersion 22
+        targetSdkVersion 22  // 23以上にするとdengerous分のパーミッション許可用制御が必要になってくる
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -24,7 +24,16 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    // Reactive
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    // Because RxAndroid releases are few and far between, it is recommended you also
+    // explicitly depend on RxJava's latest version for bug fixes and new features.
+    compile 'io.reactivex.rxjava2:rxjava:2.1.2'
+
+    // アンドロイドサポートライブラリ
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:design:25.3.1'
+
+    // テスト用
     testCompile 'junit:junit:4.12'
 }

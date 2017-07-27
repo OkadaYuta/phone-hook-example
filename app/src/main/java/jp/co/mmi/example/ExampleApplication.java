@@ -15,16 +15,31 @@ public class ExampleApplication extends Application {
 
     private final String TAG = this.getClass().getSimpleName();
 
+    /** リスナー */
+    private AppPhoneStateListener phoneStateListener;
+
     @Override
     public void onCreate() {
         super.onCreate();
-        Context context = this.getApplicationContext();
-        TelephonyManager manager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        if (manager != null) {
-            AppPhoneStateListener listener = new AppPhoneStateListener(context);
-            listener.registTo(manager);
-        } else {
-            Log.d(TAG, "TelephonyManager is null");
-        }
+        this.registerActivityLifecycleCallbacks(new ExampleLifecycleHandler());
+//        Context context = this.getApplicationContext();
+//        TelephonyManager manager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+//        if (manager != null) {
+//            this.phoneStateListener = new AppPhoneStateListener(context);
+//            phoneStateListener.registTo(manager);
+//        }
+    }
+
+    @Override
+    public void onTerminate() {
+//        Context context = this.getApplicationContext();
+//        if (this.phoneStateListener != null) {
+//            TelephonyManager manager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+//            if (manager != null) {
+//                this.phoneStateListener.unregistTo(manager);
+//                this.phoneStateListener = null;
+//            }
+//        }
+        super.onTerminate();
     }
 }

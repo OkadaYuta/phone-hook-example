@@ -14,6 +14,7 @@ import jp.co.mmi.example.activities.MainActivity;
  * Created by rannk on 2017/07/27.
  */
 public class AppPhoneStateListener extends PhoneStateListener {
+    // TODO クラス削除
 
     private final String TAG = getClass().getSimpleName();
 
@@ -59,8 +60,9 @@ public class AppPhoneStateListener extends PhoneStateListener {
         //newIntent.addCategory(Intent.FLAG_A)
         newIntent.putExtra("jp.co.mmi.example.callNumber", callNumber);
 
+        Log.d(TAG,"[startMainActivity]callNumber:" + callNumber);
 
-        this.context.startActivity(newIntent);
+        //this.context.startActivity(newIntent);
     }
 
     /**
