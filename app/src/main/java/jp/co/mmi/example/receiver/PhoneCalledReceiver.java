@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.util.Date;
+import java.util.Stack;
 
 import io.reactivex.Observable;
 import jp.co.mmi.example.activities.MainActivity;
@@ -21,6 +22,9 @@ import jp.co.mmi.example.domain.dto.PhoneMonitorDto;
 public class PhoneCalledReceiver extends BroadcastReceiver {
 
     private final String TAG = getClass().getSimpleName();
+
+    //private final Stack<String> statusStack = new Stack<>();
+
     /**
      * 着信イベント処理
      *
@@ -36,7 +40,7 @@ public class PhoneCalledReceiver extends BroadcastReceiver {
             return;
         }
         String state = extras.getString(TelephonyManager.EXTRA_STATE);
-        Log.w("MY_DEBUG_TAG", state);
+        Log.d("MY_DEBUG_TAG", state);
         if (TelephonyManager.EXTRA_STATE_RINGING.equals(state)) {
             // 着信時
             this.onCalled(context, extras);
@@ -52,6 +56,25 @@ public class PhoneCalledReceiver extends BroadcastReceiver {
     }
 
     /**
+     * 送信処理
+     *
+     * @param dto 電話イベント
+     */
+    protected void send(Context context, PhoneMonitorDto dto) {
+        // TODO オブザーバーパターンを利用した処理の汎用化
+        // ※現時点では、サンプルということで専用処理
+        Intent newIntent = new Intent(context, MainActivity.class);
+        //newIntent.setAction(dto.getClass().getName());
+        dto.serialize(newIntent);
+
+        newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        newIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(newIntent);
+        //context.sendBroadcast(newIntent);
+    }
+
+    /**
      * 着信発生時処理
      *
      * @param context コンテキスト
@@ -62,14 +85,7 @@ public class PhoneCalledReceiver extends BroadcastReceiver {
         Log.d("[onCalled]phoneNumber:", phoneNumber);
 
         PhoneMonitorDto dto = new PhoneMonitorDto(phoneNumber, new Date(), PhoneMonitorDto.EventType.ON_CALLED);
-
-        // TODO オブザーバーパターンを利用した処理の汎用化
-        // ※現時点では、サンプルということで専用処理
-        Intent newIntent = new Intent(context, MainActivity.class);
-        newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        dto.serialize(newIntent);
-
-        context.startActivity(newIntent);
+        this.send(context, dto);
     }
 
     /**
@@ -82,16 +98,8 @@ public class PhoneCalledReceiver extends BroadcastReceiver {
         String phoneNumber = extras.getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
         Log.d("[onHook]phoneNumber:", phoneNumber);
 
-        PhoneMonitorDto dto = new PhoneMonitorDto(phoneNumber, new Date(), PhoneMonitorDto.EventType.ON_HOOKED);
-
-        // TODO オブザーバーパターンを利用した処理の汎用化
-        // ※現時点では、サンプルということで専用処理
-        Intent newIntent = new Intent(context, MainActivity.class);
-        //newIntent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
-        newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        dto.serialize(newIntent);
-
-        context.startActivity(newIntent);
+        //PhoneMonitorDto dto = new PhoneMonitorDto(phoneNumber, new Date(), PhoneMonitorDto.EventType.ON_HOOKED);
+        //this.send(context, dto);
     }
 
     /**
@@ -105,13 +113,6 @@ public class PhoneCalledReceiver extends BroadcastReceiver {
         Log.d("[onIdle]phoneNumber:", phoneNumber);
 
         PhoneMonitorDto dto = new PhoneMonitorDto(phoneNumber, new Date(), PhoneMonitorDto.EventType.ON_IDLE);
-
-        // TODO オブザーバーパターンを利用した処理の汎用化
-        // ※現時点では、サンプルということで専用処理
-        Intent newIntent = new Intent(context, MainActivity.class);
-        newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        dto.serialize(newIntent);
-
-        context.startActivity(newIntent);
+        this.send(context, dto);
     }
 }

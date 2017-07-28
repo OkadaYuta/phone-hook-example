@@ -100,9 +100,11 @@ public class PhoneMonitorDto {
      * @param intent インテント
      */
     public void serialize(Intent intent) {
-        intent.putExtra(PhoneMonitorDto.class.getSimpleName() + "phoneNumber", phoneNumber);
-        intent.putExtra(PhoneMonitorDto.class.getSimpleName() + "eventTime", this.eventTime.getTime());
-        intent.putExtra(PhoneMonitorDto.class.getSimpleName() + "eventType", this.eventType.toString());
+        intent.putExtra(PhoneMonitorDto.class.getName(), true);
+
+        intent.putExtra(PhoneMonitorDto.class.getName() + ".phoneNumber", phoneNumber);
+        intent.putExtra(PhoneMonitorDto.class.getName() + ".eventTime", this.eventTime.getTime());
+        intent.putExtra(PhoneMonitorDto.class.getName() + ".eventType", this.eventType.toString());
     }
 
     /**
@@ -112,12 +114,16 @@ public class PhoneMonitorDto {
      * @return 電話監視DTO
      */
     public static PhoneMonitorDto deserialize(Intent intent) {
+        if(!intent.getBooleanExtra(PhoneMonitorDto.class.getName(), false)) {
+            return null;
+        }
+
         PhoneMonitorDto dto = new PhoneMonitorDto();
 
-        dto.phoneNumber = intent.getStringExtra(PhoneMonitorDto.class.getSimpleName() + "phoneNumber");
-        long eventTimeMills = intent.getLongExtra(PhoneMonitorDto.class.getSimpleName() + "eventTime", 0L);
+        dto.phoneNumber = intent.getStringExtra(PhoneMonitorDto.class.getName() + ".phoneNumber");
+        long eventTimeMills = intent.getLongExtra(PhoneMonitorDto.class.getName() + ".eventTime", 0L);
         dto.eventTime = new Date(eventTimeMills);
-        String eventTypeName = intent.getStringExtra(PhoneMonitorDto.class.getSimpleName() + "eventType");
+        String eventTypeName = intent.getStringExtra(PhoneMonitorDto.class.getName() + ".eventType");
         dto.eventType = EventType.valueOf(eventTypeName);
 
         return dto;
