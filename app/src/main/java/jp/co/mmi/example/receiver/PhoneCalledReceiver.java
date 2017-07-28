@@ -45,10 +45,10 @@ public class PhoneCalledReceiver extends BroadcastReceiver {
             // 着信時
             this.onCalled(context, extras);
         }
-        if (TelephonyManager.EXTRA_STATE_OFFHOOK.equals(state)) {
-            // 応答時
-            this.onHook(context, extras);
-        }
+//        if (TelephonyManager.EXTRA_STATE_OFFHOOK.equals(state)) {
+//            // 応答時
+//            this.onHook(context, extras);
+//        }
         if (TelephonyManager.EXTRA_STATE_IDLE.equals(state)) {
             // 待機状態時
             this.onIdle(context, extras);
@@ -65,11 +65,11 @@ public class PhoneCalledReceiver extends BroadcastReceiver {
         // ※現時点では、サンプルということで専用処理
         Intent newIntent = new Intent(context, MainActivity.class);
         //newIntent.setAction(dto.getClass().getName());
-        dto.serialize(newIntent);
+        dto.saveTo(newIntent);
 
         newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        newIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        //newIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(newIntent);
         //context.sendBroadcast(newIntent);
     }
@@ -113,6 +113,6 @@ public class PhoneCalledReceiver extends BroadcastReceiver {
         Log.d("[onIdle]phoneNumber:", phoneNumber);
 
         PhoneMonitorDto dto = new PhoneMonitorDto(phoneNumber, new Date(), PhoneMonitorDto.EventType.ON_IDLE);
-        this.send(context, dto);
+        //this.send(context, dto);
     }
 }

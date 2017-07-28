@@ -99,7 +99,7 @@ public class PhoneMonitorDto {
      *
      * @param intent インテント
      */
-    public void serialize(Intent intent) {
+    public void saveTo(Intent intent) {
         intent.putExtra(PhoneMonitorDto.class.getName(), true);
 
         intent.putExtra(PhoneMonitorDto.class.getName() + ".phoneNumber", phoneNumber);
@@ -113,7 +113,7 @@ public class PhoneMonitorDto {
      * @param intent インテント
      * @return 電話監視DTO
      */
-    public static PhoneMonitorDto deserialize(Intent intent) {
+    public static PhoneMonitorDto create(Intent intent) {
         if(!intent.getBooleanExtra(PhoneMonitorDto.class.getName(), false)) {
             return null;
         }

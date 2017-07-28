@@ -44,14 +44,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        final TextView logText = (TextView) this.findViewById(R.id.logText);
-        logText.setText("[onCreate]\n");
+        final TextView logTextView = (TextView) this.findViewById(R.id.logText);
+        logTextView.setText("");
+        if (savedInstanceState != null) {
+            CharSequence logText = savedInstanceState.getCharSequence(this.getClass().getName() + ".logText");
+            logTextView.append(logText != null ? logText : "");
+        }
+        logTextView.append("[onCreate]\n");
     }
 
     protected void onStart() {
         super.onStart();
-        final TextView logText = (TextView) this.findViewById(R.id.logText);
-        logText.append("[onStart]\n");
+        final TextView logTextView = (TextView) this.findViewById(R.id.logText);
+        logTextView.append("[onStart]\n");
         this.onPhoneEvent(this.getIntent());
 
 //        if (dto != null) {
@@ -113,14 +118,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        final TextView logText = (TextView) this.findViewById(R.id.logText);
-        logText.append("[onNewIntent]\n");
+        final TextView logTextView = (TextView) this.findViewById(R.id.logText);
+        logTextView.append("[onNewIntent]\n");
         this.onPhoneEvent(intent);
     }
 
     private void onPhoneEvent(Intent intent) {
-        final TextView logText = (TextView) this.findViewById(R.id.logText);
-        PhoneMonitorDto phoneMonitorDto = PhoneMonitorDto.deserialize(intent);
+        final TextView logTextView = (TextView) this.findViewById(R.id.logText);
+        PhoneMonitorDto phoneMonitorDto = PhoneMonitorDto.create(intent);
         if (phoneMonitorDto != null) {
             final SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
@@ -135,8 +140,16 @@ public class MainActivity extends AppCompatActivity {
             }
             sb.append(phoneMonitorDto.getPhoneNumber());
             sb.append("\n");
-            logText.append(sb);
+            logTextView.append(sb);
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        final TextView logTextView = (TextView) this.findViewById(R.id.logText);
+        CharSequence logText = logTextView.getText();
+        outState.putCharSequence(this.getClass().getName() + ".logText", logText);
     }
 
     @Override
